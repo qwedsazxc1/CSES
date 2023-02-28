@@ -3,40 +3,40 @@
 
 using namespace std;
 
-void dfs(vector<vector<int>> &tree, int node, int weight, vector<int> &dis, vector<bool> &visited){
-    if (visited[node])
-        return;
-    visited[node] = true;
+int dfs(vector<vector<int>> &tree, int node, int weight, vector<int> &dis, int previous){
     dis[node] = weight;
-    for (auto adj: tree[node])
-        dfs(tree, adj, weight + 1, dis, visited);
+    int far = -1;
+    for (auto adj: tree[node]){
+        if (previous != adj){
+            int max_node = dfs(tree, adj, weight + 1, dis, node);
+            if (far == -1 || (dis[far] < dis[max_node]))
+                far = max_node;
+        }
+    }
+    return (far == -1) ? node : far;
 }
 
 int main(){
     int n;
     cin >> n;
-    vector<int> dis(n, 0x3f3f3f3f);
-    vector<int> ref(n, 0);
+    vector<vector<int>> dis(2, vector<int> (n));
     vector<vector<int>> tree(n); 
-    vector<bool> visited(n, false);
     for (int i = 0; i < n - 1; i++){
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-        ref[a] += 1;
-        ref[b] += 1;
         tree[a].push_back(b);
         tree[b].push_back(a);
     }
-    int root;
-    for (int i = 0; i < n; i++)
-        if (ref[i] == 1){
-            root = i;
-            break;
-        }
     
-    dfs(tree, root, 0, dis, visited);
+    int max_node1 = dfs(tree, 0, 0, dis[0], 0);
+    int max_node2 = dfs(tree, max_node1, 0, dis[0], max_node1);
+    dfs(tree, max_node2, 0, dis[1], max_node2);
 
-
+    for (int i = 0; i < n; i++){
+        cout << max(dis[0][i], dis[1][i]) << " "; 
+    }
+    cout << "\n";
+    return 0;
 }
