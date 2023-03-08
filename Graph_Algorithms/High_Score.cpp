@@ -20,34 +20,26 @@ int main(){
         w = -w;
         edges.push_back(Edge(u, v, w));
     }
-    vector<pair<long long, int>> dist(n + 1, make_pair(1e18, 0));
-    dist[1].first = 0;
-    dist[1].second = 1;
+    vector<long long> dist(n + 1, 1e18);
+    dist[1] = 0;
+
 
     int flag = 0;
-    for(int i = 0; i < n - 1; i++){
+    for(int i = 0; i < 2 * n; i++){
         for(int j = 0; j < m; j++){
             int u = edges[j].u;
             int v = edges[j].v;
             long long w = edges[j].w;
-            if(dist[u].first + w < dist[v].first){
-                dist[v].first = dist[u].first + w;
-                dist[v].second = u;
+            if (dist[u] != 1e18 && dist[u] + w < dist[v]){
+                if (i >= n){
+                    dist[v] = (long long)-1e18;
+                    continue;
+                }
+                dist[v] = dist[u] + w;
             }
         }
     }
 
-    vector<int> path(n + 1, 0);
-    int last = n;
-    while (last != 1 && !path[last]){
-        path[last] = 1;
-        last = dist[last].second;
-    }
-    if (last != 1){
-        cout << -1 << endl;
-        return 0;
-    }
-
-    cout << -dist[n].first << endl;
+    cout << ((dist[n] == (long long)-1e18) ? -1LL : -dist[n]) << endl;
     return 0;
 }
