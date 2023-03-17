@@ -37,36 +37,31 @@
 // Correct output 2:
 // 191305161
 
-// User's output 2:
-// 359690938
-
 #include <bits/stdc++.h>
 using namespace std;
 #define ll long long
-#define mod 1000000007
-ll power(ll a,ll b)
-{
-    ll res=1;
-    while(b)
-    {
+#define MOD ((long long)1000000007)
+ll power(ll a, ll b, ll mod){
+    ll res = 1;
+    while(b){
         if(b&1)
         {
-            res=(res*a)%mod;
+            res=(res*a) % mod;
         }
-        a=(a*a)%mod;
-        b=b>>1;
+        a = (a * a) % mod;
+        b = b >> 1;
     }
     return res;
 }
+
 int main() {
     ll t;
-    cin>>t;
-    while(t--)
-    {
-        ll a,b,c;
-        cin>>a>>b>>c;
-        ll ans=power(a,power(b,c));
-        cout<<ans<<endl;
+    cin >> t;
+    while (t--){
+        ll a, b, c;
+        cin >> a >> b >> c;
+        ll ans = power(a,power(b,c, MOD - 1), MOD);
+        cout << ans << endl;
     }
     return 0;
 }
