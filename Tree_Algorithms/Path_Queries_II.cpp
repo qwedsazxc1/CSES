@@ -3,9 +3,11 @@
 
 using namespace std;
 
-int count = 0;
+long long res = 0;
+int count = 0, ql, qr;
 vector<vector<int>> graph;
-vector<long long> tree, value;
+vector<long long> value;
+long long tree[800005];
 vector<int> sz, parent, topparent, maxson, id, dep;
 vector<vector<int>> p(20);
 
@@ -18,13 +20,15 @@ long long update(int node, int l, int r, int k, int x){
 	return tree[node] = max(update(node * 2 + 1, l, mid, k, x), update(node * 2 + 2, mid + 1, r, k, x));
 }
 
-long long query(int node, int l, int r, int ql, int qr){
+long long query(int node, int l, int r){
 	if (qr < l || ql > r)
 		return 0;
 	if (r <= qr && l >= ql)
 		return tree[node];
+	if (tree[node] <= res)
+		return 0;
 	int mid = (r - l) / 2 + l;
-	return max(query(node * 2 + 1, l, mid, ql, qr), query(node * 2 + 2, mid + 1, r, ql, qr));
+	return max(query(node * 2 + 1, l, mid), query(node * 2 + 2, mid + 1, r));
 }
 
 void dfs(int cur, int prev){
@@ -82,7 +86,6 @@ void init_p(){
 }
 
 long long path(int chi, int par, int n){
-	long long res = 0;
 	while (chi != par){
 		if (topparent[chi] == chi){
 			res = max(res, value[chi]);
@@ -90,11 +93,13 @@ long long path(int chi, int par, int n){
 			continue;
 		}
 		if (dep[topparent[chi]] > dep[par]){
-			res = max(res, query(0, 0, n - 1, id[topparent[chi]], id[chi]));
+			ql = id[topparent[chi]]; qr = id[chi];
+			res = max(res, query(0, 0, n - 1));
 			chi = parent[topparent[chi]];
 			continue;
 		}
-		res = max(res, query(0, 0, n - 1, id[par], id[chi]));
+		ql = id[par]; qr = id[chi];
+		res = max(res, query(0, 0, n - 1));
 		break;
 	}
 	return res;
@@ -119,7 +124,6 @@ int main(){
 	for (int i = 0; i < p.size(); i++)
 		p[i].resize(n);
 	id.resize(n); maxson.resize(n); topparent.resize(n); sz.resize(n); parent.resize(n); dep.resize(n);
-   	tree.assign(n << 2, 0);
 	dep[0] = 0;
 	dfs(0, 0);
 	dfs2(0, 0);
@@ -142,6 +146,7 @@ int main(){
 			cin >> a >> b;
 			a--; b--;
 			int acc = lca(a, b);
+			res = 0;
 			cout << max(max(path(a, acc, n), path(b, acc, n)), value[acc]) << "\n";
 		}
 	}	
