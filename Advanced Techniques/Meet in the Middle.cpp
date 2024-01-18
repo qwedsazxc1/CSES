@@ -4,12 +4,14 @@ using namespace std;
 
 typedef long long ll;
 
+ll l[(1 << 20)];
+
 int main(){
 	ll k;
 	int n, half;
 	cin >> n >> k;
 	half = n / 2 + (n & 1);
-	ll arr[n], left[(1 << half)];
+	ll arr[n];
 	for (int i = 0; i < n; i++)
 		cin >> arr[i];
 	
@@ -19,9 +21,11 @@ int main(){
 			if ((1 << j) & i)
 				res += arr[j];
 		}
-		left[i] = res;
+		l[i] = res;
 	}
 	unordered_map<ll, ll> right;
+	right.reserve(4096);
+	right.max_load_factor(0.25);
 	int ramount = n - half;
 	for (int i = 0; i < (1 << ramount); i++){
 		ll res = 0;
@@ -33,7 +37,7 @@ int main(){
 	}
 	ll ans = 0;
 	for (int i = 0; i < (1 << half); i++){
-		ll cur = left[i];
+		ll cur = l[i];
 		auto it = right.find(k - cur);
 		if (it == right.end())
 			continue;
