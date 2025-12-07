@@ -28,7 +28,7 @@ void push(int cur, int l, int r){
 		swap(tree[cur].ln, temp);
 	if (l == r)
 		return;
-	if (tree[cur].ln.a < temp.a){
+	if (tree[cur].ln.a > temp.a){
 		push(cur * 2 + 1, l, mid);
 		tree[cur * 2 + 1].tag = temp;
 		push(cur * 2 + 1, l, mid);
