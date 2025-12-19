@@ -39,11 +39,11 @@ int main(){
 	for (int i = 1; i < n; i++){
 		P cur = arr[i];
 		while (l < i){
-			if (arr[l].x >= cur.x - (ll)sqrt(d)) break;
+			if (d >= (cur.x - arr[l].x) * (cur.x - arr[l].x)) break;
 			s.erase({arr[l++]});
 		}
 
-		auto from = s.lower_bound({cur.x - d, cur.y - d}), to = s.upper_bound({cur.x, cur.y + d});
+		auto from = s.lower_bound({-INF, cur.y - sqrt(d)}), to = s.upper_bound({INF, cur.y + sqrt(d)});
 		for (; from != to; from++){
 			ll tempx = from->x - cur.x;
 			tempx *= tempx;
