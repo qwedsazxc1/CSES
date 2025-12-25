@@ -1,7 +1,6 @@
 *a.out
 *.exe
 *.vscode
-*test*
 *.in
 *.out
 *.ans
