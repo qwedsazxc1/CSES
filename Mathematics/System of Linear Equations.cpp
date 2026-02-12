@@ -33,25 +33,26 @@ int main(){
             cin >> arr[i][j];
         }
     }
-    for (int i = 0; i < min(n, m); i++){
-        if (arr[i][i] == 0){
-            for (int j = i + 1; j < n; j++){
-                if (arr[j][i] != 0){
-                    swap(arr[i], arr[j]);
+    for (int i = 0, j = 0; i < n && j < m; j++){
+        if (arr[i][j] == 0){
+            for (int k = i + 1; k < n; k++){
+                if (arr[k][j] != 0){
+                    swap(arr[i], arr[k]);
                     break;
                 }
             }
         }
-        if (arr[i][i] == 0)
+        if (arr[i][j] == 0)
             continue;
-        for (int j = i + 1; j < n; j++){
-            if (arr[j][i] != 0){
-                ll factor = (arr[j][i] * mod_inverse(arr[i][i])) % MOD;
-                for (int k = i; k < m + 1; k++){
-                    arr[j][k] = ((arr[j][k] - factor * arr[i][k]) % MOD + MOD) % MOD;
+        for (int k = i + 1; k < n; k++){
+            if (arr[k][j] != 0){
+                ll factor = (arr[k][j] * mod_inverse(arr[i][j])) % MOD;
+                for (int l = j; l < m + 1; l++){
+                    arr[k][l] = ((arr[k][l] - factor * arr[i][l]) % MOD + MOD) % MOD;
                 }
             }
         }
+        i++;
     }
     bool flag = true;
     for (int i = 0; i < n; i++){
@@ -73,27 +74,21 @@ int main(){
     }
     vector<ll> solution(m, 0);
     vector<pair<int, int>> swaps;
-    for (int i = min(n, m) - 1; i >= 0; i--){
+    for (int i = n - 1; i >= 0; i--){
         ll sum = arr[i][m];
-        if (arr[i][i] == 0){
-            for (int j = i + 1; j < m; j++){
-                if (arr[i][j] != 0){
-                    for (int k = 0; k < n; k++){
-                        swap(arr[k][i], arr[k][j]);
-                    }
-                    swaps.push_back({i, j});
-                    break;
-                }
+        ll idx = -1;
+        for (int j = 0; j < m; j++){
+            if (arr[i][j] != 0){
+                idx = j;
+                break;
             }
         }
-        for (int j = i + 1; j < m; j++){
+        if (idx == -1)
+            continue;
+        for (int j = idx + 1; j < m; j++){
             sum = ((sum - arr[i][j] * solution[j]) % MOD + MOD) % MOD;
         }
-        solution[i] = (sum * mod_inverse(arr[i][i])) % MOD;
-    }
-    for (int i = (int)swaps.size() - 1; i >= 0; i--){
-        auto t = swaps[i];
-        swap(solution[t.first], solution[t.second]);
+        solution[idx] = (sum * mod_inverse(arr[i][idx])) % MOD;
     }
     for (int i = 0; i < m; i++){
         cout << solution[i] << " ";
